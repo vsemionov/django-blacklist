@@ -11,7 +11,7 @@ from .middleware import _add_rule as _middleware_add_rule
 logger = logging.getLogger(__name__)
 
 
-def blacklist_ratelimited(duration):
+def blacklist_ratelimited(duration, block=True):
     def decorator(fn):
         @wraps(fn)
         def wrapper(request, *args, **kwargs):
@@ -25,7 +25,8 @@ def blacklist_ratelimited(duration):
                 else:
                     logger.warning('Unable to blacklist ratelimited client.')
 
-                raise Ratelimited()
+                if block:
+                    raise Ratelimited()
 
             return fn(request, *args, **kwargs)
 
