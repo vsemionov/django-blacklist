@@ -13,6 +13,7 @@ setup(
     version='0.1.0',
 
     description='Blacklist users or hosts in Django. Automatically blacklist rate-limited clients.',
+    long_description=README,
 
     url='https://github.com/vsemionov/django-blacklist',
 
