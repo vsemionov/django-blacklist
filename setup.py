@@ -2,6 +2,8 @@ import os
 
 from setuptools import setup, find_packages
 
+import blacklist
+
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
@@ -10,7 +12,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 setup(
     name='django-blacklist',
 
-    version='0.1.0',
+    version=blacklist.__version__,
 
     description='Blacklist users and hosts in Django. Automatically blacklist rate-limited clients.',
     long_description=README,
