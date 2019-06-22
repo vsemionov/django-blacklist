@@ -8,6 +8,9 @@ import blacklist
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
 
+packages = find_packages()
+packages.extend(['blacklist.management', 'blacklist.management.commands'])
+
 
 setup(
     name='django-blacklist',
@@ -39,7 +42,7 @@ setup(
 
     keywords='django blacklist ratelimit firewall',
 
-    packages=find_packages(),
+    packages=packages,
 
     install_requires=[
         'Django'
