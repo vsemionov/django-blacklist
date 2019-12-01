@@ -48,11 +48,11 @@ A rule can target a user or an IP address.
 You can also target IP networks (ranges) by specifying the optional prefixlen field (number of network prefix bits).
 Each rule has a specific duration. After that duration passes, rules expire automatically, without a restart.
 When a request is blocked due to a matching rule:
- * Status 400 (bad request) is returned.
- * An error template is rendered.
-   You can specify a custom one (see below), or use the one for status 400.
- * A message is logged
-   (warning from logger `blacklist.middleware` for custom templates, or error from logger `django.security` otherwise).
+* Status 400 (bad request) is returned.
+* An error template is rendered.
+  You can specify a custom one (see below), or use the one for status 400.
+* A message is logged
+  (warning from logger `blacklist.middleware` for custom templates, or error from logger `django.security` otherwise).
 
 ### Removing Expired Rules
 
@@ -109,7 +109,8 @@ For that purpose, you can install [django-log-request-id](https://github.com/dab
 
 ## Settings
 
- * `BLACKLIST_ENABLE` - whether blacklisted clients should be blocked; default: `True`
- * `BLACKLIST_TEMPLATE` - name of a custom error template to render to blocked clients;
-   its context will contain `request` and `exception`;
-   set to `None` to use the template for status 400; default: `None`
+* `BLACKLIST_ENABLE` - whether blacklisted clients should be blocked,
+  and rate-limited clients should be blacklisted; default: `True`
+* `BLACKLIST_TEMPLATE` - name of a custom error template to render to blocked clients;
+  its context will contain `request` and `exception`;
+  set to `None` to use the template for status 400; default: `None`

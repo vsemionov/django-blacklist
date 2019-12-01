@@ -2,6 +2,8 @@ import logging
 import ipaddress
 from functools import wraps
 
+from django.conf import settings
+
 from ratelimit.exceptions import Ratelimited
 
 from .models import Rule
@@ -16,14 +18,15 @@ def blacklist_ratelimited(duration, block=True):
         @wraps(fn)
         def wrapper(request, *args, **kwargs):
             if request.limited:
-                if user_duration and request.user.is_authenticated:
-                    _create_user_rule(request, user_duration)
+                if getattr(settings, 'BLACKLIST_ENABLE', True):
+                    if user_duration and request.user.is_authenticated:
+                        _create_user_rule(request, user_duration)
 
-                elif ip_duration:
-                    _create_ip_rule(request, ip_duration)
+                    elif ip_duration:
+                        _create_ip_rule(request, ip_duration)
 
-                else:
-                    logger.warning('Unable to blacklist ratelimited client.')
+                    else:
+                        logger.warning('Unable to blacklist ratelimited client.')
 
                 if block:
                     raise Ratelimited()
