@@ -47,8 +47,12 @@ You can manage the blacklist rules from the admin. Changes take effect after res
 A rule can target a user or an IP address.
 You can also target IP networks (ranges) by specifying the optional prefixlen field (number of network prefix bits).
 Each rule has a specific duration. After that duration passes, rules expire automatically, without a restart.
-When a request is rejected due to a matching rule, an response with HTTP status 400 (bad request) is returned,
-and an error is output from logger `django.security`.
+When a request is blocked due to a matching rule:
+ * Status 400 (bad request) is returned.
+ * An error template is rendered.
+   You can specify a custom one (see below), or use the one for status 400.
+ * A message is logged
+   (warning from logger `blacklist.middleware` for custom templates, or error from logger `django.security` otherwise).
 
 ### Removing Expired Rules
 
@@ -95,9 +99,17 @@ If you are behind two proxies, use the second to last, etc.
 `@blacklist_ratelimited` accepts two arguments: `(duration, block=True)`.
 * `duration` can be a `timedelta` object, or a tuple of two separate durations
 (for user-based and IP-based rules).
-* `block` specifies if the request should be rejected immediately, or passed to the view.
+* `block` specifies if the request should be blocked immediately, or passed to the view.
 
 Automatic rules will have a comment that contains the ID of the request, which triggered the creation of the rule,
 and the "request line".
 The request ID is added only if available. Django does not generate request IDs.
 For that purpose, you can install [django-log-request-id](https://github.com/dabapps/django-log-request-id).
+
+
+## Settings
+
+ * `BLACKLIST_ENABLE` - whether blacklisted clients should be blocked; default: `True`
+ * `BLACKLIST_TEMPLATE` - name of a custom error template to render to blocked clients;
+   its context will contain `request` and `exception`;
+   set to `None` to use the template for status 400; default: `None`

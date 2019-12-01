@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.0] - 2019-06-22
+### Added
+- Render a custom error template, if configured.
+- Setting to enable the blocking of blacklisted clients (on by default).
+
 ## [0.1.2] - 2019-06-22
 ### Fixed
 - Install the `trim_blacklist` command with the package.
@@ -16,6 +21,7 @@
 ### Added
 - Initial version.
 
+[0.2.0]: https://github.com/vsemionov/django-blacklist/compare/0.1.2...0.2.0
 [0.1.2]: https://github.com/vsemionov/django-blacklist/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/vsemionov/django-blacklist/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/vsemionov/django-blacklist/releases/tag/0.1.0

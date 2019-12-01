@@ -1,10 +1,16 @@
 import ipaddress
 import threading
 from typing import Optional, Set
+import logging
 
 from django.core.exceptions import SuspiciousOperation
+from django.shortcuts import render
+from django.conf import settings
 
 from .models import Rule
+
+
+logger = logging.getLogger(__name__)
 
 
 _blacklist: Optional[Set[Rule]] = None
@@ -17,10 +23,22 @@ class Blacklisted(SuspiciousOperation):
 
 def blacklist_middleware(get_response):
     def middleware(request):
-        if _blacklist is None:
-            _load_blacklist()
+        if getattr(settings, 'BLACKLIST_ENABLE', True):
+            if _blacklist is None:
+                _load_blacklist()
 
-        _filter_client(request)
+            try:
+                _filter_client(request)
+
+            except Blacklisted as exception:
+                template_name = getattr(settings, 'BLACKLIST_TEMPLATE', None)
+
+                if template_name:
+                    logger.warning(exception)
+                    context = {'request': request, 'exception': exception}
+                    return render(request, template_name, context, status=400)
+
+                raise
 
         return get_response(request)
 
@@ -38,7 +56,7 @@ def _filter_client(request):
 
     for rule in _blacklist:
         if rule.is_active():
-            # no logging here, since the event will be logged by django.security
+            # no logging here, because the event will be logged either by the caller, or by django.security
 
             rule_user_id = rule.user_id
             if rule_user_id is not None and client_user_id == rule_user_id:
