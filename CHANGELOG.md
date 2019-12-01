@@ -1,6 +1,11 @@
 # Changelog
 
-## [0.2.0] - 2019-06-22
+## [0.2.1] - 2019-12-01
+### Fixed
+- Corrected the package version.
+- Corrected the release date of version 0.2.0 in the changelog.
+
+## [0.2.0] - 2019-12-01
 ### Added
 - Render a custom error template, if configured.
 - Setting to enable the blocking of blacklisted clients (on by default).
@@ -21,6 +26,7 @@
 ### Added
 - Initial version.
 
+[0.2.1]: https://github.com/vsemionov/django-blacklist/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/vsemionov/django-blacklist/compare/0.1.2...0.2.0
 [0.1.2]: https://github.com/vsemionov/django-blacklist/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/vsemionov/django-blacklist/compare/0.1.0...0.1.1
