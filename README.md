@@ -111,6 +111,8 @@ For that purpose, you can install [django-log-request-id](https://github.com/dab
 
 * `BLACKLIST_ENABLE` - whether blacklisted clients should be blocked,
   and rate-limited clients should be blacklisted; default: `True`
+* `BLACKLIST_RATELIMITED_ENABLE` - whether rate-limited clients should be automatically blacklisted;
+  requires `BLACKLIST_ENABLE`; default: `True`
 * `BLACKLIST_TEMPLATE` - name of a custom error template to render to blocked clients;
   its context will contain `request` and `exception`;
   set to `None` to use the template for status 400; default: `None`

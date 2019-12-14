@@ -18,7 +18,8 @@ def blacklist_ratelimited(duration, block=True):
         @wraps(fn)
         def wrapper(request, *args, **kwargs):
             if request.limited:
-                if getattr(settings, 'BLACKLIST_ENABLE', True):
+                if getattr(settings, 'BLACKLIST_ENABLE', True) \
+                        and getattr(settings, 'BLACKLIST_RATELIMITED_ENABLE', True):
                     if user_duration and request.user.is_authenticated:
                         _create_user_rule(request, user_duration)
 
