@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.1] - 2020-05-10
+### Changed
+- Limited the length of comments in rules.
+- Bulk deletion of rules from the database.
+
 ## [0.4.0] - 2020-05-10
 ### Added
 - Reload rules periodically.
@@ -40,6 +45,7 @@
 ### Added
 - Initial version.
 
+[0.4.1]: https://github.com/vsemionov/django-blacklist/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/vsemionov/django-blacklist/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/vsemionov/django-blacklist/compare/0.2.2...0.3.0
 [0.2.2]: https://github.com/vsemionov/django-blacklist/compare/0.2.1...0.2.2

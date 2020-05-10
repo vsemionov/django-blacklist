@@ -20,7 +20,7 @@ class Rule(models.Model):
 
     duration = models.DurationField(validators=[validators.MinValueValidator(timedelta(0))])
 
-    comments = models.TextField(blank=True)
+    comments = models.TextField(max_length=2048, blank=True)
 
     def __str__(self):
         return str(self.id)
