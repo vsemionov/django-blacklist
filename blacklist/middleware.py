@@ -1,9 +1,12 @@
 import ipaddress
 import threading
-from typing import Optional, Set
+from datetime import datetime, timedelta
+from typing import Optional, Dict, Union
 import logging
 
 from django.core.exceptions import SuspiciousOperation
+from django.db.models import F, Max, DateTimeField
+from django.utils.timezone import now
 from django.shortcuts import render
 from django.conf import settings
 
@@ -13,7 +16,14 @@ from .models import Rule
 logger = logging.getLogger(__name__)
 
 
-_blacklist: Optional[Set[Rule]] = None
+_RELOAD_PERIOD = timedelta(seconds=getattr(settings, 'BLACKLIST_RELOAD_PERIOD', 60))
+
+
+_user_blacklist: Dict[int, datetime] = {}
+_addr_blacklist: Dict[Optional[int], Dict[Union[ipaddress.IPv4Network, ipaddress.IPv6Network], datetime]] = {}
+
+_loaded: Optional[datetime] = None
+
 _blacklist_lock = threading.Lock()
 
 
@@ -24,11 +34,13 @@ class Blacklisted(SuspiciousOperation):
 def blacklist_middleware(get_response):
     def middleware(request):
         if getattr(settings, 'BLACKLIST_ENABLE', True):
-            if _blacklist is None:
+            current_time = now()
+
+            if _needs_reload(current_time):
                 _load_blacklist()
 
             try:
-                _filter_client(request)
+                _filter_client(request, current_time)
 
             except Blacklisted as exception:
                 template_name = getattr(settings, 'BLACKLIST_TEMPLATE', None)
@@ -45,52 +57,79 @@ def blacklist_middleware(get_response):
     return middleware
 
 
-def _filter_client(request):
-    client_user = request.user
-    client_user_id = client_user.id
+def _filter_client(request, current_time):
+    user = request.user
+    user_id = user.id
 
-    client_addr = request.META['REMOTE_ADDR']
-    client_ip = ipaddress.ip_address(client_addr)
+    addr = request.META['REMOTE_ADDR']
 
-    inactive_rules = set()
+    # no logging here, because the event will be logged either by the caller, or by django.request
 
-    for rule in _blacklist:
-        if rule.is_active():
-            # no logging here, because the event will be logged either by the caller, or by django.security
+    until = _user_blacklist.get(user_id)
+    if until is not None and until > current_time:
+        raise Blacklisted('Blacklisted user: %s' % user.username)
 
-            rule_user_id = rule.user_id
-            if rule_user_id is not None and client_user_id == rule_user_id:
-                message = 'Blacklisted client user: %s' % client_user.username
-                raise Blacklisted(message)
+    for prefixlen, blacklist in _addr_blacklist.items():
+        network = Rule(address=addr, prefixlen=prefixlen).get_network()
 
-            rule_network = rule.get_network()
-            if rule_network is not None and client_ip in rule_network:
-                message = 'Blacklisted client address: %s' % client_addr
-                raise Blacklisted(message)
+        until = blacklist.get(network)
+        if until is not None and until > current_time:
+            raise Blacklisted('Blacklisted address: %s' % addr)
 
-        else:
-            inactive_rules.add(rule)
 
-        if inactive_rules:
-            _remove_rules(inactive_rules)
+def _needs_reload(current_time):
+    return _loaded is None or current_time >= _loaded + _RELOAD_PERIOD
 
 
 def _load_blacklist():
-    global _blacklist
+    global _loaded, _user_blacklist, _addr_blacklist
 
     with _blacklist_lock:
-        _blacklist = {rule for rule in Rule.objects.all() if rule.is_active()}
+        current_time = now()
+
+        if _needs_reload(current_time):
+            until = Max(F('created') + F('duration'), output_field=DateTimeField())
+            rules = Rule.objects.values('user_id', 'address', 'prefixlen').annotate(until=until)
+            rules = rules.filter(until__gt=current_time)
+
+            user_blacklist = {}
+            addr_blacklist = {}
+
+            for rule in rules:
+                user_id = rule['user_id']
+                prefixlen = rule['prefixlen']
+                network = Rule(address=rule['address'], prefixlen=prefixlen).get_network()
+                until = rule['until']
+
+                _add_client(user_blacklist, addr_blacklist, user_id, prefixlen, network, until)
+
+            _user_blacklist = user_blacklist
+            _addr_blacklist = addr_blacklist
+            _loaded = now()
+
+
+def _add_client(user_blacklist, addr_blacklist, user_id, prefixlen, network, until):
+    if user_id is not None:
+        current_until = user_blacklist.get(user_id)
+        if current_until is None or current_until < until:
+            user_blacklist[user_id] = until
+
+    if network is not None:
+        blacklist = addr_blacklist.setdefault(prefixlen, {})
+        current_until = blacklist.get(network)
+        if current_until is None or current_until < until:
+            blacklist[network] = until
 
 
 def _add_rule(rule):
-    global _blacklist
+    global _addr_blacklist
 
     with _blacklist_lock:
-        _blacklist = _blacklist | {rule}
+        user_id = rule.user_id
+        prefixlen = rule.prefixlen
+        network = rule.get_network()
+        until = rule.get_expires()
 
-
-def _remove_rules(rules):
-    global _blacklist
-
-    with _blacklist_lock:
-        _blacklist = _blacklist - rules
+        addr_blacklist = _addr_blacklist.copy()
+        _add_client(_user_blacklist, addr_blacklist, user_id, prefixlen, network, until)
+        _addr_blacklist = addr_blacklist

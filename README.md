@@ -8,6 +8,7 @@ Blacklist users and hosts in Django. Automatically blacklist rate-limited client
 Django Blacklist allows you to block specific users and IP addresses/networks from accessing your application.
 Clients can be blocked manually from the admin interface, or automatically after exceeding a request rate limit.
 The blacklist rules are applied for a specific duration.
+The blacklist is very scalable and is applied without noticeable overhead for large numbers of rules.
 
 
 ## Installation
@@ -43,10 +44,11 @@ $ python manage.py migrate blacklist
 
 ## Usage
 
-You can manage the blacklist rules from the admin. Changes take effect after restarting the server.
+You can manage the blacklist rules from the admin.
+Changes take effect after a configurable time, or when the server is restarted.
 A rule can target a user or an IP address.
 You can also target IP networks (ranges) by specifying the optional prefixlen field (number of network prefix bits).
-Each rule has a specific duration. After that duration passes, rules expire automatically, without a restart.
+Each rule has a specific duration. After that duration passes, rules expire automatically.
 When a request is blocked due to a matching rule:
 * Status 400 (bad request) is returned.
 * An error template is rendered.
@@ -83,7 +85,7 @@ def index(request):
     ...
 ```
 
-Automatic rules take effect immediately, without a restart.
+Automatic rules take effect immediately.
 If the request comes from an authenticated user, the rule will target that user.
 Otherwise, it will target their IP address.
 ***
@@ -111,6 +113,7 @@ For that purpose, you can install [django-log-request-id](https://github.com/dab
 
 * `BLACKLIST_ENABLE` - whether blacklisted clients should be blocked,
   and rate-limited clients should be blacklisted; default: `True`
+* `BLACKLIST_RELOAD_PERIOD` - how often to reload the blacklist, in seconds; default: `60`
 * `BLACKLIST_RATELIMITED_ENABLE` - whether rate-limited clients should be automatically blacklisted;
   requires `BLACKLIST_ENABLE`; default: `True`
 * `BLACKLIST_TEMPLATE` - name of a custom error template to render to blocked clients;
