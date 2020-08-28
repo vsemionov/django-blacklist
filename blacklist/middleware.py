@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 _RELOAD_PERIOD = timedelta(seconds=getattr(settings, 'BLACKLIST_RELOAD_PERIOD', 60))
-
+_LOGGING_ENABLED = getattr(settings, 'BLACKLIST_LOGGING_ENABLED', True)
 
 _user_blacklist: Dict[int, datetime] = {}
 _addr_blacklist: Dict[Optional[int], Dict[Union[ipaddress.IPv4Network, ipaddress.IPv6Network], datetime]] = {}
@@ -46,7 +46,8 @@ def blacklist_middleware(get_response):
                 template_name = getattr(settings, 'BLACKLIST_TEMPLATE', None)
 
                 if template_name:
-                    logger.warning(exception)
+                    if _LOGGING_ENABLED:
+                        logger.warning(exception)
                     context = {'request': request, 'exception': exception}
                     return render(request, template_name, context, status=400)
 
