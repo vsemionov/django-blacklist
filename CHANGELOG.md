@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- Allow custom user models. Thanks to [@richardARPANET](https://github.com/richardARPANET).
+
 ## [0.4.1] - 2020-05-10
 ### Changed
 - Limited the length of comments in rules.
@@ -45,6 +49,7 @@
 ### Added
 - Initial version.
 
+[Unreleased]: https://github.com/vsemionov/django-blacklist/compare/0.4.1...HEAD
 [0.4.1]: https://github.com/vsemionov/django-blacklist/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/vsemionov/django-blacklist/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/vsemionov/django-blacklist/compare/0.2.2...0.3.0
