@@ -119,3 +119,5 @@ For that purpose, you can install [django-log-request-id](https://github.com/dab
 * `BLACKLIST_TEMPLATE` - name of a custom error template to render to blocked clients;
   its context will contain `request` and `exception`;
   set to `None` to use the template for status 400; default: `None`
+* `BLACKLIST_LOGGING_ENABLE` - whether blocked requests should be logged
+  (honored only if a custom error template is configured); default: `True`

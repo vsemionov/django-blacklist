@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Added logging toggle setting. Thanks to [@sweldon](https://github.com/sweldon).
 ### Fixed
 - Allow custom user models. Thanks to [@richardARPANET](https://github.com/richardARPANET).
 
