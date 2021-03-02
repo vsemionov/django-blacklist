@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 _RELOAD_PERIOD = timedelta(seconds=getattr(settings, 'BLACKLIST_RELOAD_PERIOD', 60))
 
+
 _user_blacklist: Dict[int, datetime] = {}
 _addr_blacklist: Dict[Optional[int], Dict[Union[ipaddress.IPv4Network, ipaddress.IPv6Network], datetime]] = {}
 
