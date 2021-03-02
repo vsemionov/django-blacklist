@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.5.0] - 2021-03-02
 ### Added
 - Added logging toggle setting. Thanks to [@sweldon](https://github.com/sweldon).
 ### Fixed
@@ -51,7 +51,7 @@
 ### Added
 - Initial version.
 
-[Unreleased]: https://github.com/vsemionov/django-blacklist/compare/0.4.1...HEAD
+[0.5.0]: https://github.com/vsemionov/django-blacklist/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/vsemionov/django-blacklist/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/vsemionov/django-blacklist/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/vsemionov/django-blacklist/compare/0.2.2...0.3.0
