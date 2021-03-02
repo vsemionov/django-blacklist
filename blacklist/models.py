@@ -1,19 +1,18 @@
 import ipaddress
 from datetime import timedelta
 
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.core import validators
 from django.utils.timezone import now
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 
 class Rule(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    user = models.ForeignKey(get_user_model(), null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
 
     address = models.GenericIPAddressField(null=True, blank=True)
     prefixlen = models.PositiveIntegerField(null=True, blank=True,
