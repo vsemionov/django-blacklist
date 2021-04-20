@@ -1,7 +1,11 @@
 # Changelog
 
+## [0.6.1] - 2021-04-20
+### Changed
+- Correction to the previous changelog entry.
+
 ## [0.6.0] - 2021-04-20
-### Fixed
+### Changed
 - Converted the middleware to a class.
 
 ### Upgrading
@@ -63,6 +67,7 @@ change `blacklist.middleware.blacklist_middleware` to `blacklist.middleware.Blac
 ### Added
 - Initial version.
 
+[0.6.1]: https://github.com/vsemionov/django-blacklist/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/vsemionov/django-blacklist/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/vsemionov/django-blacklist/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/vsemionov/django-blacklist/compare/0.4.1...0.5.0
