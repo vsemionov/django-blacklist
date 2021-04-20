@@ -26,12 +26,12 @@ INSTALLED_APPS = [
 ]
 ```
 
-Add the `blacklist_middleware` middleware after `AuthenticationMiddleware`:
+Add the `BlacklistMiddleware` middleware after `AuthenticationMiddleware`:
 ```
 MIDDLEWARE = [
     ...
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'blacklist.middleware.blacklist_middleware',
+    'blacklist.middleware.BlacklistMiddleware',
     ...
 ]
 ```

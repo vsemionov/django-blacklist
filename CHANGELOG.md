@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0] - 2021-04-20
+### Fixed
+- Converted the middleware to a class.
+
+### Upgrading
+In your `MIDDLEWARE` in `settings.py`,
+change `blacklist.middleware.blacklist_middleware` to `blacklist.middleware.BlacklistMiddleware`.
+
+## [0.5.1] - 2021-03-05
+### Changed
+- Added a blank line for consistency. No other changes in this release.
+
 ## [0.5.0] - 2021-03-02
 ### Added
 - Added logging toggle setting. Thanks to [@sweldon](https://github.com/sweldon).
@@ -51,6 +63,8 @@
 ### Added
 - Initial version.
 
+[0.6.0]: https://github.com/vsemionov/django-blacklist/compare/0.5.1...0.6.0
+[0.5.1]: https://github.com/vsemionov/django-blacklist/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/vsemionov/django-blacklist/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/vsemionov/django-blacklist/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/vsemionov/django-blacklist/compare/0.3.0...0.4.0
