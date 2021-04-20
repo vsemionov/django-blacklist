@@ -6,6 +6,7 @@ import logging
 
 from django.core.exceptions import SuspiciousOperation
 from django.db.models import F, Max, DateTimeField
+from django.utils.deprecation import MiddlewareMixin
 from django.utils.timezone import now
 from django.shortcuts import render
 from django.conf import settings
@@ -31,8 +32,8 @@ class Blacklisted(SuspiciousOperation):
     pass
 
 
-def blacklist_middleware(get_response):
-    def middleware(request):
+class BlacklistMiddleware(MiddlewareMixin):
+    def process_request(self, request):
         if getattr(settings, 'BLACKLIST_ENABLE', True):
             current_time = now()
 
@@ -53,10 +54,6 @@ def blacklist_middleware(get_response):
                     return render(request, template_name, context, status=400)
 
                 raise
-
-        return get_response(request)
-
-    return middleware
 
 
 def _filter_client(request, current_time):
