@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 _RELOAD_PERIOD = timedelta(seconds=getattr(settings, 'BLACKLIST_RELOAD_PERIOD', 60))
+_REMOTE_ADDR = getattr(settings, 'BLACKLIST_REMOTE_ADDR', 'REMOTE_ADDR')
 
 
 _user_blacklist: Dict[int, datetime] = {}
@@ -60,7 +61,7 @@ def _filter_client(request, current_time):
     user = request.user
     user_id = user.id
 
-    addr = request.META['REMOTE_ADDR']
+    addr = request.META[_REMOTE_ADDR]
 
     # no logging here, because the event will be logged either by the caller, or by django.request
 

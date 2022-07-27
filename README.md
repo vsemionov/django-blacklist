@@ -121,3 +121,6 @@ For that purpose, you can install [django-log-request-id](https://github.com/dab
   set to `None` to use the template for status 400; default: `None`
 * `BLACKLIST_LOGGING_ENABLE` - whether blocked requests should be logged
   (honored only if a custom error template is configured); default: `True`
+* `BLACKLIST_REMOTE_ADDR` - name of the header that contains the real IP address of the client (useful if your app
+  sits behind a load balancer that you cannot control, like e.g. [pythonanywhere.com](https://help.pythonanywhere.com/pages/WebAppClientIPAddresses/));
+  default: `REMOTE_ADDR`

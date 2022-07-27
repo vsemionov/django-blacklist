@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+### Added
+- Added setting to overrider header name that contains the real IP address.
+
 ## [0.6.1] - 2021-04-20
 ### Changed
 - Correction to the previous changelog entry.
