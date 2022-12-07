@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.7.0] - 2022-12-08
+### Changed
+- Upgraded to [django-ratelimit](https://github.com/jsocol/django-ratelimit) version 4.
+  If you are using this, and your version is older, you will have to upgrade it.
+### Added
+- Client addresses are now obtained from a configurable source.
+  See the documentation of the `BLACKLIST_ADDRESS_SOURCE` setting.
+  Thanks to [@jimmybutton](https://github.com/jimmybutton).
+
+### Upgrading
+If you are not using `django-ratelimit`, you don't have to do anything.
+Otherwise, follow [their instructions](https://django-ratelimit.readthedocs.io/en/stable/upgrading.html)
+to upgrade to version 4.
+
 ## [0.6.1] - 2021-04-20
 ### Changed
 - Correction to the previous changelog entry.
@@ -67,6 +81,7 @@ change `blacklist.middleware.blacklist_middleware` to `blacklist.middleware.Blac
 ### Added
 - Initial version.
 
+[0.7.0]: https://github.com/vsemionov/django-blacklist/compare/0.6.1...0.7.0
 [0.6.1]: https://github.com/vsemionov/django-blacklist/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/vsemionov/django-blacklist/compare/0.5.1...0.6.0
 [0.5.1]: https://github.com/vsemionov/django-blacklist/compare/0.5.0...0.5.1
