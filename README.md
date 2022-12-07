@@ -88,15 +88,6 @@ def index(request):
 Automatic rules take effect immediately.
 If the request comes from an authenticated user, the rule will target that user.
 Otherwise, it will target their IP address.
-***
-Note: The client IP address is taken from the `REMOTE_ADDR` value of `request.META`.
-If your application is behind one or more reverse proxies, this will, by default,
-always be the address of the nearest proxy.
-To avoid blacklisting all clients, you can set `REMOTE_ADDR` from the `X-Forwarded-For` header in middleware.
-However, keep in mind that this header can be forged to bypass the rate limits.
-To counter that, you can use the last address in that header.
-If you are behind two proxies, use the second to last, etc.
-***
 
 `@blacklist_ratelimited` accepts two arguments: `(duration, block=True)`.
 * `duration` can be a `timedelta` object, or a tuple of two separate durations
@@ -107,6 +98,27 @@ Automatic rules will have a comment that contains the ID of the request, which t
 and the "request line".
 The request ID is added only if available. Django does not generate request IDs.
 For that purpose, you can install [django-log-request-id](https://github.com/dabapps/django-log-request-id).
+
+
+## Proxies and Client Addresses
+
+By default, the client IP address is taken from the `REMOTE_ADDR` value of `request.META`.
+If your application server is behind one or more reverse proxies,
+this will usually be the address of the nearest proxy, and not the actual client address.
+To properly blacklist clients by IP address,
+you can configure `Django Blacklist` to use addresses from another source (see `Settings` below).
+
+To actually obtain the proxied client addresses,
+you can use [django-ipware](https://github.com/un33k/django-ipware).
+In this case, you can configure `Django Blacklist` to obtain client addresses from your function,
+which in turn calls `django-ipware` for the actual logic.
+
+Alternatively, you can set `REMOTE_ADDR` from the `X-Forwarded-For` header in middleware,
+installed before `Django Blacklist`.
+However, keep in mind that this header can be forged to bypass the rate limits.
+To counter that, you can use the last address in that header (which should be set by your trusted reverse proxy).
+If you are behind two proxies, use the second to last address, and so on.
+***
 
 
 ## Settings
@@ -121,3 +133,6 @@ For that purpose, you can install [django-log-request-id](https://github.com/dab
   set to `None` to use the template for status 400; default: `None`
 * `BLACKLIST_LOGGING_ENABLE` - whether blocked requests should be logged
   (honored only if a custom error template is configured); default: `True`
+* `BLACKLIST_ADDRESS_SOURCE` - the source of client addresses; can be a key in `request.META`,
+  a callable that receives the request object, or a dotted string path to such a callable;
+  default: `'REMOTE_ADDR'`
