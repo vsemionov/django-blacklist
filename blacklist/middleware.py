@@ -4,9 +4,10 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Union
 import logging
 
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.db.models import F, Max, DateTimeField
 from django.utils.deprecation import MiddlewareMixin
+from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.shortcuts import render
 from django.conf import settings
@@ -60,7 +61,7 @@ def _filter_client(request, current_time):
     user = request.user
     user_id = user.id
 
-    addr = request.META['REMOTE_ADDR']
+    addr = _get_client_address(request)
 
     # no logging here, because the event will be logged either by the caller, or by django.request
 
@@ -74,6 +75,34 @@ def _filter_client(request, current_time):
         until = blacklist.get(network)
         if until is not None and until > current_time:
             raise Blacklisted('Blacklisted address: %s' % addr)
+
+
+def _get_client_address(request):
+    source = getattr(settings, 'BLACKLIST_ADDRESS_SOURCE', 'REMOTE_ADDR')
+
+    if source in request.META:
+        addr = request.META[source]
+
+    elif callable(source):
+        addr = source(request)
+
+    elif isinstance(source, str) and '.' in source:
+        func = import_string(source)
+        addr = func(request)
+
+    else:
+        raise ImproperlyConfigured(
+            'Unable to obtain the client address. '
+            'Please see the documentation of the BLACKLIST_ADDRESS_SOURCE setting.'
+        )
+
+    if not addr:
+        raise ImproperlyConfigured(
+            'The client address is empty. '
+            'Please check the BLACKLIST_ADDRESS_SOURCE setting.'
+        )
+
+    return addr
 
 
 def _needs_reload(current_time):
