@@ -4,7 +4,7 @@ from functools import wraps
 
 from django.conf import settings
 
-from ratelimit.exceptions import Ratelimited
+from django_ratelimit.exceptions import Ratelimited
 
 from .models import Rule
 from .middleware import _add_rule as _middleware_add_rule

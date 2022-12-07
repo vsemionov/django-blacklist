@@ -76,7 +76,7 @@ Then, blacklist rate-limited clients by adding the `@blacklist_ratelimited` deco
 For example:
 ```
 from datetime import timedelta
-from ratelimit.decorators import ratelimit
+from django_ratelimit.decorators import ratelimit
 from blacklist.ratelimit import blacklist_ratelimited
 
 @ratelimit(key='user_or_ip', rate='50/m', block=False)
