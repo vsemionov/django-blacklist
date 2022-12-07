@@ -5,9 +5,9 @@ Blacklist users and hosts in Django. Automatically blacklist rate-limited client
 
 ## Overview
 
-Django Blacklist allows you to block specific users and IP addresses/networks from accessing your application.
+`Django Blacklist` allows you to block specific users and IP addresses/networks from accessing your application.
 Clients can be blocked manually from the admin interface, or automatically after exceeding a request rate limit.
-The blacklist rules are applied for a specific duration.
+Each blacklist rule is applied for a specific duration.
 The blacklist is very scalable and is applied without noticeable overhead for large numbers of rules.
 
 
@@ -47,12 +47,12 @@ $ python manage.py migrate blacklist
 You can manage the blacklist rules from the admin.
 Changes take effect after a configurable time, or when the server is restarted.
 A rule can target a user or an IP address.
-You can also target IP networks (ranges) by specifying the optional prefixlen field (number of network prefix bits).
-Each rule has a specific duration. After that duration passes, rules expire automatically.
+You can also target IP networks (ranges) by specifying the optional `prefixlen` field (number of network prefix bits).
+Each rule has a specific duration. After that time interval passes, the rule expires automatically.
 When a request is blocked due to a matching rule:
 * Status 400 (bad request) is returned.
 * An error template is rendered.
-  You can specify a custom one (see below), or use the one for status 400.
+  You can specify a custom one (see `Settings` below), or use the one for status 400.
 * A message is logged
   (warning from logger `blacklist.middleware` for custom templates, or error from logger `django.security` otherwise).
 
