@@ -7,7 +7,7 @@ from django.conf import settings
 from django_ratelimit.exceptions import Ratelimited
 
 from .models import Rule
-from .middleware import _add_rule as _middleware_add_rule
+from .middleware import _get_client_address, _add_rule as _middleware_add_rule
 
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ def _create_user_rule(request, duration):
 
 
 def _create_ip_rule(request, duration):
-    addr = request.META['REMOTE_ADDR']
+    addr = _get_client_address(request)
     ip = ipaddress.ip_address(addr)
     comments = _create_comments(request)
     rule = Rule(address=ip.compressed, duration=duration, comments=comments)
