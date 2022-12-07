@@ -48,7 +48,7 @@ You can manage the blacklist rules from the admin.
 Changes take effect after a configurable time, or when the server is restarted.
 A rule can target a user or an IP address.
 You can also target IP networks (ranges) by specifying the optional `prefixlen` field (number of network prefix bits).
-Each rule has a specific duration. After that time interval passes, the rule expires automatically.
+Each rule has a specific duration. After that time interval passes, the rule expires.
 When a request is blocked due to a matching rule:
 * Status 400 (bad request) is returned.
 * An error template is rendered.
@@ -118,7 +118,6 @@ installed before `Django Blacklist`.
 However, keep in mind that this header can be forged to bypass the rate limits.
 To counter that, you can use the last address in that header (which should be set by your trusted reverse proxy).
 If you are behind two proxies, use the second to last address, and so on.
-***
 
 
 ## Settings
@@ -134,5 +133,5 @@ If you are behind two proxies, use the second to last address, and so on.
 * `BLACKLIST_LOGGING_ENABLE` - whether blocked requests should be logged
   (honored only if a custom error template is configured); default: `True`
 * `BLACKLIST_ADDRESS_SOURCE` - the source of client addresses; can be a key in `request.META`,
-  a callable that receives the request object, or a dotted string path to such a callable;
+  a callable that receives the request object, or the dotted string path to such a callable;
   default: `'REMOTE_ADDR'`
