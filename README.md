@@ -52,7 +52,7 @@ Each rule has a specific duration. After that time interval passes, the rule exp
 When a request is blocked due to a matching rule:
 * Status 400 (bad request) is returned.
 * An error template is rendered.
-  You can specify a custom one (see `Settings` below), or use the one for status 400.
+  You can specify a custom one (see *Settings* below), or use the one for status 400.
 * A message is logged
   (warning from logger `blacklist.middleware` for custom templates, or error from logger `django.security` otherwise).
 
