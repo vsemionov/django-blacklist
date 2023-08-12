@@ -14,12 +14,12 @@ The blacklist is very scalable and is applied without noticeable overhead for la
 ## Installation
 
 To install the package, run:
-```
+```shell
 $ pip install django-blacklist
 ```
 
 Add the `blacklist` application to `INSTALLED_APPS`:
-```
+```python
 INSTALLED_APPS = [
     ...
     'blacklist'
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
 ```
 
 Add the `BlacklistMiddleware` middleware after `AuthenticationMiddleware`:
-```
+```python
 MIDDLEWARE = [
     ...
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -37,7 +37,7 @@ MIDDLEWARE = [
 ```
 
 Apply the blacklist database migrations:
-```
+```shell
 $ python manage.py migrate blacklist
 ```
 
@@ -60,7 +60,7 @@ When a request is blocked due to a matching rule:
 
 Expired rules are not automatically removed from the database.
 They can be cleaned up with the included management command `trim_blacklist`:
-```
+```shell
 $ python manage.py trim_blacklist [-c <created_days>] [-e <expired_days>]
 ```
 The options `-c` and `-e` specify the minimum ages of creation and expiry, respectively.
@@ -74,7 +74,7 @@ This feature requires [django-ratelimit](https://github.com/jsocol/django-rateli
 First, rate-limit a view by applying the `@ratelimit` decorator. Make sure to set `block=False`.
 Then, blacklist rate-limited clients by adding the `@blacklist_ratelimited` decorator. Specify the blacklist duration.
 For example:
-```
+```python
 from datetime import timedelta
 from django_ratelimit.decorators import ratelimit
 from blacklist.ratelimit import blacklist_ratelimited
