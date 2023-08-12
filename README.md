@@ -5,7 +5,7 @@ Blacklist users and hosts in Django. Automatically blacklist rate-limited client
 
 ## Overview
 
-`Django Blacklist` allows you to block specific users and IP addresses/networks from accessing your application.
+Django Blacklist allows you to block specific users and IP addresses/networks from accessing your application.
 Clients can be blocked manually from the admin interface, or automatically after exceeding a request rate limit.
 Each blacklist rule is applied for a specific duration.
 The blacklist is very scalable and is applied without noticeable overhead for large numbers of rules.
@@ -106,15 +106,15 @@ By default, the client IP address is taken from the `REMOTE_ADDR` value of `requ
 If your application server is behind one or more reverse proxies,
 this will usually be the address of the nearest proxy, and not the actual client address.
 To properly blacklist clients by IP address,
-you can configure `Django Blacklist` to use addresses from another source (see `Settings` below).
+you can configure Django Blacklist to use addresses from another source (see `Settings` below).
 
 To actually obtain the proxied client addresses,
 you can use [django-ipware](https://github.com/un33k/django-ipware).
-In this case, you can configure `Django Blacklist` to obtain client addresses from your function,
+In this case, you can configure Django Blacklist to obtain client addresses from your function,
 which in turn calls `django-ipware` for the actual logic.
 
 Alternatively, you can set `REMOTE_ADDR` from the `X-Forwarded-For` header in middleware,
-installed before `Django Blacklist`.
+installed before Django Blacklist.
 However, keep in mind that this header can be forged to bypass the rate limits.
 To counter that, you can use the last address in that header (which should be set by your trusted reverse proxy).
 If you are behind two proxies, use the second to last address, and so on.
